@@ -106,6 +106,7 @@ def decode_jwt():
 
 def _get_jwt(user_data):
     exp_time = datetime.datetime.utcnow() + datetime.timedelta(weeks=2)
+    # print('mmmmoooolll  ' + user_data['email'])
     payload = {'exp': exp_time,
                'nbf': datetime.datetime.utcnow(),
                'email': user_data['email']}
@@ -113,3 +114,29 @@ def _get_jwt(user_data):
 
 if __name__ == '__main__':
     APP.run(host='127.0.0.1', port=8080, debug=True)
+
+'''
+
+FROM python:stretch
+
+COPY . /app
+WORKDIR /app
+
+RUN pip install --upgrade pip
+RUN pip install -r requirements.txt
+
+RUN apt-get update && apt-get install -y locales && locale-gen en_US.UTF-8
+RUN locale-gen en_US.UTF-8
+ENV LANG en_US.UTF-8
+ENV LANGUAGE en_US:en
+ENV LC_ALL en_US.UTF-8
+ENV PYTHONIOENCODING=utf-8
+
+ENTRYPOINT ["gunicorn"  , "-b", ":8080", "main:APP"]
+
+
+docker build -t myimage:jwt-api-test
+
+docker container run -d --name myUdacityContainer --env-file=.env_file -p 80:8080 myimage:jwt-api-test
+
+'''
